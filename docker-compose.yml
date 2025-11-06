@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+
+  falco:
+    image: falcosecurity/falco:latest
+    container_name: falco
+    privileged: true
+    network_mode: "bridge"
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /dev:/host/dev:ro
+      - /proc:/host/proc:ro
+      - /boot:/host/boot:ro
+      - /lib/modules:/lib/modules:ro
+      - ./falco/rules:/etc/falco/rules.d:ro
+      - ./falco/forwarder.sh:/opt/forwarder.sh:ro
+      - ./falco/falco.json:/var/log/falco.json
+    command: >
+      sh -c "falco -c /etc/falco/falco.yaml \
+              -o json_output=true \
+              -o json_include_output_property=true \
+              -o enable_source=true \
+              -o log_output=true \
+              -o log_file=/var/log/falco.json \
+              & /opt/forwarder.sh"
+
+  webhook:
+    build: ./webhook
+    container_name: falco-webhook
+    restart: unless-stopped
+    network_mode: "bridge"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    environment:
+      - FLASK_ENV=production
+    ports:
+      - "5000:5000"
+
+  victim:
+    build: ./victim
+    container_name: victim-sim
+    restart: unless-stopped
+    network_mode: "bridge"
+    volumes:
+      - ./host_share:/host:ro
+    command: ["/bin/sh", "/app/app.sh"]

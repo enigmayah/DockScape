@@ -1,0 +1,6 @@
+- rule: HostMountAccessDetected
+  desc: Detect access to host-mounted filesystem inside container (simulated container escape)
+  condition: container and (fd.name startswith "/host" or fd.name contains "/host/")
+  output: Container=%container.name (id=%container.id) accessed host path=%fd.name user=%user.name cmdline=%proc.cmdline
+  priority: WARNING
+  tags: [container,host,mount]
