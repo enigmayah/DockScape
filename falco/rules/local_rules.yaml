@@ -8,6 +8,15 @@
 
 # falco_rules/custom.rules - defensive simple tests
 
+# Detect shell spawned inside container
+- rule: Shell Spawned in Container
+  desc: Detect interactive shells (bash, sh, zsh) started inside containers
+  condition: container and proc.name in (bash, sh, zsh, ash)
+  output: "Shell spawned inside container (container=%container.name user=%user.name cmdline=%proc.cmdline)"
+  priority: WARNING
+  tags: [container,shell,exec,security]
+
+
 # Detect containers started with SYS_ADMIN capability (benign config test)
 - rule: Container with SYS_ADMIN capability
   desc: Detect containers started with CAP_SYS_ADMIN capability (benign test)
