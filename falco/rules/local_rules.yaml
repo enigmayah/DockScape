@@ -4,3 +4,20 @@
   output: Container=%container.name (id=%container.id) accessed host path=%fd.name user=%user.name cmdline=%proc.cmdline
   priority: WARNING
   tags: [container,host,mount]
+
+
+# falco_rules/custom.rules - defensive simple tests
+
+# Detect containers started with SYS_ADMIN capability (benign config test)
+- rule: Container with SYS_ADMIN capability
+  desc: Detect containers started with CAP_SYS_ADMIN capability (benign test)
+  condition: container and (proc.cmdline contains "--cap-add=SYS_ADMIN" or container.capabilities contains "SYS_ADMIN")
+  output: "Container started with SYS_ADMIN capability (container=%container.id image=%container.image cmd=%proc.cmdline)"
+  priority: WARNING
+
+# Detect containers that bind mount /proc from host
+- rule: Container bind mount host /proc
+  desc: Detect containers that mount host /proc (possible suspicious)
+  condition: container and fd.name startswith "/proc" and fd.directory = true
+  output: "Container bind-mounted /proc (container=%container.id image=%container.image fd=%fd.name)"
+  priority: WARNING
