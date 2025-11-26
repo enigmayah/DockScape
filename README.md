@@ -2,7 +2,7 @@
 Container Security - with Docker and Falco and webhook
 
 # DockScape: Container Escape Detection Lab
-A Docker-based lab that simulates a controlled container escape and uses **Falco** for runtime security detection.  
+A Docker-based lab that simulates a controlled container escape and uses **Falco** for runtime security detection.. 
 When Falco detects a suspicious system call (like reading `/host/etc/passwd`), it triggers a webhook that pauses the offending container automatically.
 
 ## Project Overview
