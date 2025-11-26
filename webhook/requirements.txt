@@ -1,2 +1,4 @@
-Flask==2.3.2
-docker==6.0.0
+flask
+docker
+requests-unixsocket
+
