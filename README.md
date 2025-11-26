@@ -28,4 +28,7 @@ docker compose up -d
 # To view Falco alerts:
 docker logs -f falco
 
+# or to with timestamps, then:
+docker logs -ft falco
+
 
