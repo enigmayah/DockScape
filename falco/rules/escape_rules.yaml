@@ -1,0 +1,12 @@
+- rule: Container Host Mount Access
+  desc: Detect container accessing /host directory
+  condition: >
+    container and fd.name startswith /host
+  output: >
+    ALERT: Container escape attempt!
+    container.name=%container.name
+    container.id=%container.id
+    file=%fd.name
+  priority: CRITICAL
+  tags: [container, escape, host]
+
